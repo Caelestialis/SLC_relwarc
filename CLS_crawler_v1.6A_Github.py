@@ -35,7 +35,7 @@ LOAD_MORE_XPATH = '//div[text()="加载更多"]'    # //div[contains(@class, "w-
 
 # 计算 12 小时前的时间基准
 now = datetime.now()
-time_limit = now - timedelta(hours=1)
+time_limit = now - timedelta(hours=12.5)
 print(f"当前时间: {now.strftime('%Y-%m-%d %H:%M:%S')}")
 print(f"截止时间（12小时前）: {time_limit.strftime('%Y-%m-%d %H:%M:%S')}\n")
 
@@ -335,28 +335,6 @@ if all_data:
             print(f"❌ 飞书推送失败，飞书服务器返回: {response_json.get('msg')}")
     except Exception as fe:
         print(f"飞书组件运行异常: {fe}")
-
-    # ---- 4. 【新增】钉钉 Webhook 机器人推送 ----
-    try:
-        # 钉钉原生对 Markdown 支持极其完美，直接塞入 ai_summary 源码即可完美加粗、换行
-        ding_payload = {
-            "msgtype": "markdown",
-            "markdown": {
-                "title": f"📈 AI 财经早/晚报",  # 手机首屏通知透出的标题
-                "text": f"## 📈 AI 财经早/晚报 ({now.strftime('%Y-%m-%d %H:%M')})\n\n{ai_summary}" # 正文
-            }
-        }
-        
-        ding_res = requests.post(DINGDING_WEBHOOK_URL, json=ding_payload, headers={"Content-Type": "application/json"})
-        ding_json = ding_res.json()
-        
-        # 钉钉的成功返回码也是 0
-        if ding_json.get("errcode") == 0:
-            print("🔨 钉钉机器人 Markdown 日报推送成功！")
-        else:
-            print(f"❌ 钉钉推送失败，钉钉服务器返回: {ding_json.get('errmsg')}")
-    except Exception as de:
-        print(f"钉钉组件运行异常: {de}")
 
 else:
     print("\n 没有抓取到任何符合条件的数据。")
