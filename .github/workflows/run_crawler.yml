@@ -1,0 +1,42 @@
+name: 财联社 AI 自动化电报爬虫
+
+on:
+  schedule:
+    # 每天北京时间 08:30 和 20:30 定时触发（对应国际标准时间 UTC 的 00:30 和 12:30）
+    - cron: '30 0,12 * * *'
+  workflow_dispatch: # 开启手动触发按钮，方便测试
+
+jobs:
+  run-crawler:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 检出仓库代码
+      uses: actions/checkout@v4
+
+    - name: 设置 Python 环境
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+
+    - name: 安装 Chrome 浏览器
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y google-chrome-stable
+
+    - name: 安装 Python 依赖库
+      run: |
+        pip install selenium pandas openpyxl zai requests
+
+    - name: 执行爬虫脚本并发送报告
+      env:
+        ZHIPU_API_KEY: ${{ secrets.ZHIPU_API_KEY }}
+        SENDER_EMAIL: ${{ secrets.SENDER_EMAIL }}
+        SENDER_PASSWORD: ${{ secrets.SENDER_PASSWORD }}
+        RECEIVER_EMAIL: ${{ secrets.RECEIVER_EMAIL }}
+        SMTP_SERVER: 'smtp.gmail.com' # 如果是其他邮箱请对应修改
+        SMTP_PORT: '465'
+        FEISHU_WEBHOOK_URL: ${{ secrets.FEISHU_WEBHOOK_URL }}
+      run: |
+        # ⚠️ 确保这里的名字和你上传的 Python 文件名完全一致！
+        python CLS_crawler_v1.6A_Github.py
