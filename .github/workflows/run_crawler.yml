@@ -26,7 +26,7 @@ jobs:
 
     - name: 安装 Python 依赖库
       run: |
-        pip install selenium pandas openpyxl zai requests
+        pip install selenium pandas openpyxl zai zai-sdk requests
 
     - name: 执行爬虫脚本并发送报告
       env:
