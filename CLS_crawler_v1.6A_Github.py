@@ -154,6 +154,7 @@ SENDER_EMAIL = os.getenv("SENDER_EMAIL")
 SENDER_PASSWORD = os.getenv("SENDER_PASSWORD") # 邮箱的授权码/客户端密码，不是登录密码
 RECEIVER_EMAIL = os.getenv("RECEIVER_EMAIL")
 FEISHU_WEBHOOK_URL = os.getenv("FEISHU_WEBHOOK_URL")    # 飞书 Webhook 链接
+DINGDING_WEBHOOK_URL = os.getenv("DINGDING_WEBHOOK_URL")
 
 # ==============================================================================
 
@@ -332,6 +333,32 @@ if all_data:
             print(f"❌ 飞书推送失败，飞书服务器返回: {response_json.get('msg')}")
     except Exception as fe:
         print(f"飞书组件运行异常: {fe}")
+
+    # ---- 4. 【新增】钉钉 Webhook 机器人推送 ----
+    if DINGDING_WEBHOOK_URL:
+        print("\n开始通过钉钉机器人推送日报...")
+        try:
+            # 钉钉原生对 Markdown 支持极其完美，直接塞入 ai_summary 源码即可完美加粗、换行
+            ding_payload = {
+                "msgtype": "markdown",
+                "markdown": {
+                    "title": f"📈 AI 财经早/晚报",  # 手机首屏通知透出的标题
+                    "text": f"## 📈 AI 财经早/晚报 ({now.strftime('%Y-%m-%d %H:%M')})\n\n{ai_summary}" # 正文
+                }
+            }
+            
+            ding_res = requests.post(DINGDING_WEBHOOK_URL, json=ding_payload, headers={"Content-Type": "application/json"})
+            ding_json = ding_res.json()
+            
+            # 钉钉的成功返回码也是 0
+            if ding_json.get("errcode") == 0:
+                print("🔨 钉钉机器人 Markdown 日报推送成功！")
+            else:
+                print(f"❌ 钉钉推送失败，钉钉服务器返回: {ding_json.get('errmsg')}")
+        except Exception as de:
+            print(f"钉钉组件运行异常: {de}")
+    else:
+        print("\n未检测到 DINGDING_WEBHOOK_URL 环境变量，跳过钉钉推送。")
 
 else:
     print("\n 没有抓取到任何符合条件的数据。")
