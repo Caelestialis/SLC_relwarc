@@ -155,6 +155,7 @@ SMTP_PORT = int(os.getenv("SMTP_PORT", "465"))
 SENDER_EMAIL = os.getenv("SENDER_EMAIL")
 SENDER_PASSWORD = os.getenv("SENDER_PASSWORD") # 邮箱的授权码/客户端密码，不是登录密码
 RECEIVER_EMAIL = os.getenv("RECEIVER_EMAIL")
+RECEIVER_EMAIL_2 = os.getenv("RECEIVER_EMAIL_2")
 FEISHU_WEBHOOK_URL = os.getenv("FEISHU_WEBHOOK_URL")    # 飞书 Webhook 链接
 DINGDING_WEBHOOK_URL = os.getenv("DINGDING_WEBHOOK_URL")
 
@@ -281,9 +282,13 @@ if all_data:
     print("\n开始通过邮件向主人推送日报...")
     try:
         # 构建复杂的邮件结构（支持正文+附件）
+        # 核心步骤：把两个收件人地址打包成一个 Python 列表（List）
+        to_addrs = [RECEIVER_EMAIL, RECEIVER_EMAIL_2]
         msg = MIMEMultipart()
         msg['From'] = SENDER_EMAIL
-        msg['To'] = RECEIVER_EMAIL
+        # msg['To'] 接收的是一个“用英文逗号分隔的字符串”，而不是列表！
+        msg['To'] = ", ".join(to_addrs)
+        # msg['To'] = RECEIVER_EMAIL
         msg['Subject'] = f"🤖 AI 财经简报 - {now.strftime('%Y-%m-%d %H:%M')}"
         # 将 AI 总结放入邮件正文（支持 Markdown 或纯文本）
         msg.attach(MIMEText(ai_summary, 'plain', 'utf-8'))
