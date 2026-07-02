@@ -282,11 +282,11 @@ if all_data:
     print("\n开始通过邮件向主人推送日报...")
     try:
         # 构建复杂的邮件结构（支持正文+附件）
-        # 核心步骤：把两个收件人地址打包成一个 Python 列表（List）
+        # 核心步骤 1：把两个收件人地址打包成一个 Python 列表（List）
         to_addrs = [RECEIVER_EMAIL, RECEIVER_EMAIL_2]
         msg = MIMEMultipart()
         msg['From'] = SENDER_EMAIL
-        # msg['To'] 接收的是一个“用英文逗号分隔的字符串”，而不是列表！
+        # 核心步骤 2：msg['To'] 接收的是一个“用英文逗号分隔的字符串”，而不是列表！
         msg['To'] = ", ".join(to_addrs)
         # msg['To'] = RECEIVER_EMAIL
         msg['Subject'] = f"🤖 AI 财经简报 - {now.strftime('%Y-%m-%d %H:%M')}"
@@ -304,9 +304,10 @@ if all_data:
         # 连接 SMTP 服务器发送
         server = smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT)
         server.login(SENDER_EMAIL, SENDER_PASSWORD)
-        server.sendmail(SENDER_EMAIL, RECEIVER_EMAIL, msg.as_string())
+        # 核心步骤 3：
+        server.sendmail(SENDER_EMAIL, to_addrs, msg.as_string())
         server.quit()
-        print("📬 邮件及 Excel 附件已成功送达你的邮箱！")
+        print("📬 邮件及 Excel 附件已成功送达邮箱！")
     except Exception as e:
         print(f"邮件发送失败: {e}")
         
