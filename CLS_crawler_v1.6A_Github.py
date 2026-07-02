@@ -41,7 +41,9 @@ print(f"截止时间（12小时前）: {time_limit.strftime('%Y-%m-%d %H:%M:%S')
 
 # 初始化浏览器
 options = webdriver.ChromeOptions()
-# options.add_argument('--headless') # 如果需要看浏览器界面，可以注释本行
+options.add_argument('--headless=new')  # 云端 Actions 必须开启无头模式
+options.add_argument('--no-sandbox')
+options.add_argument('--disable-dev-shm-usage')
 driver = webdriver.Chrome(options=options)
 driver.maximize_window()
 
