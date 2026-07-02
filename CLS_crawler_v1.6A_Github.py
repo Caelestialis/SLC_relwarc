@@ -298,7 +298,10 @@ if all_data:
             part = MIMEBase("application", "octet-stream")
             part.set_payload(attachment.read())
             encoders.encode_base64(part)
-            part.add_header("Content-Disposition", f"attachment; filename={filename}")
+            # 核心修正 1：使用 Header 对包含中文的文件名进行标准邮件编码转换, filename 会被包装成像 =?utf-8?b?xxxx?= 的标准格式
+            encoded_filename = Header(filename, 'utf-8').encode()
+            # 核心修正 2：在 Content-Disposition 中传入编码后的文件名
+            part.add_header("Content-Disposition", "attachment", filename=encoded_filename)
             msg.attach(part)
             
         # 连接 SMTP 服务器发送
