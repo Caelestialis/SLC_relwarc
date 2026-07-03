@@ -38,6 +38,7 @@ jobs:
         SMTP_SERVER: 'smtp.gmail.com' # 如果是其他邮箱请对应修改
         SMTP_PORT: '465'
         FEISHU_WEBHOOK_URL: ${{ secrets.FEISHU_WEBHOOK_URL }}
+        DINGDING_WEBHOOK_URL: ${{ secrets.DINGDING_WEBHOOK_URL }}
       run: |
         # ⚠️ 确保这里的名字和你上传的 Python 文件名完全一致！
         python CLS_crawler_v1.6A_Github.py
