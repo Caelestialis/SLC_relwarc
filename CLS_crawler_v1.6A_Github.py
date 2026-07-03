@@ -21,6 +21,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
 from email import encoders
+from email.header import Header
 from zai import ZhipuAiClient # 导入智谱 SDK, 需要安装 zai 和 zai-sdk
 
 # ==================== 配置区域 ====================
