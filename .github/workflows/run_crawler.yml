@@ -34,6 +34,7 @@ jobs:
         SENDER_EMAIL: ${{ secrets.SENDER_EMAIL }}
         SENDER_PASSWORD: ${{ secrets.SENDER_PASSWORD }}
         RECEIVER_EMAIL: ${{ secrets.RECEIVER_EMAIL }}
+        RECEIVER_EMAIL_2: ${{ secrets.RECEIVER_EMAIL_2 }}
         SMTP_SERVER: 'smtp.gmail.com' # 如果是其他邮箱请对应修改
         SMTP_PORT: '465'
         FEISHU_WEBHOOK_URL: ${{ secrets.FEISHU_WEBHOOK_URL }}
