@@ -7,7 +7,7 @@ Created on Sun Jun 28 00:30:34 2026
 
 import time
 import re
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import pandas as pd
 from selenium import webdriver
 from selenium.webdriver.common.by import By
