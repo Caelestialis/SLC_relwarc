@@ -34,8 +34,11 @@ NEWS_CONTENT_XPATH = './/div[contains(@class, "search-content")]'
 LOAD_MORE_XPATH = '//div[text()="加载更多"]'    # //div[contains(@class, "w-162") and contains(@class, "h-38") and contains(text(), "加载更多")]
 # ==================================================
 
-# 计算 12 小时前的时间基准
-now = datetime.now()
+# 1. 无论在谁的电脑或云端，强行获取绝对的、统一的 UTC 零时区时间
+utc_now = datetime.now(timezone.utc)
+# 2. 在绝对零时区的基础上，统一往后拨 8 个小时，即标准的北京时间
+now = utc_now.replace(tzinfo=None) + timedelta(hours=8)
+
 time_limit = now - timedelta(hours=12.5)
 print(f"当前时间: {now.strftime('%Y-%m-%d %H:%M:%S')}")
 print(f"截止时间（12小时前）: {time_limit.strftime('%Y-%m-%d %H:%M:%S')}\n")
