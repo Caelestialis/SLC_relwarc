@@ -185,7 +185,7 @@ if all_data:
     all_summary_pieces = [] # 存放每一批 AI 总结出来的结果
     # 定义首选模型和备用模型
     PRIMARY_MODEL = "glm-4.7-flash"
-    BACKUP_MODEL = "glm-4.6v-flash" # 作为备胎
+    BACKUP_MODEL = "GLM-4-Flash-250414" # 作为备胎
 
     # 利用 Python 的 range 步长进行切片循环
     for i in range(0, len(df), CHUNK_SIZE):
@@ -200,7 +200,7 @@ if all_data:
         
         # --- 核心抗噪重试逻辑 ---
         current_model = PRIMARY_MODEL
-        MAX_RETRIES = 2 # 每批数据最多重试 ? 次
+        MAX_RETRIES = 3 # 每批数据最多重试 ? 次
         chunk_success = False
         
         for retry in range(MAX_RETRIES):
@@ -218,7 +218,7 @@ if all_data:
                                 "【硬性限制】\n"
                                 "1. 本批次数据中，每条独立的重大资讯必须作为单独的一个 Bullet Point（列表要点）列出，严禁多条合并。\n"
                                 "2. 本批次数据中，总输出条数不超过 20 条。\n"
-                                "3. 每条字数严禁超过 160 字。在基本保留原文核心事实（公司/代码/金额/核心逻辑等等）的前提下进行语义去冗余和逻辑精简。\n\n"
+                                "3. 每条字数严禁超过 150 字。在基本保留原文核心事实（公司/代码/金额/核心逻辑等等）的前提下进行语义去冗余和逻辑精简。\n\n"
                                 "【筛选原则】\n"
                                 "严格剔除：民生琐事、常规的盘中价格波动和播报、一般的公司常规公告、无剧烈影响的国际新闻。\n\n"
                                 "核心保留：\n"
@@ -232,7 +232,7 @@ if all_data:
                         {"role": "user", "content": raw_news_text}
                         ],
                         "thinking": {"type": "disabled"},
-                        "max_tokens": 33000,
+                        "max_tokens": 16000,
                         "temperature": 0.2
                     }
                 
@@ -263,20 +263,17 @@ if all_data:
                 else:
                     if is_congestion:
                         print(f"   🚨 连续 {MAX_RETRIES} 次触发 1305 拥堵。降级为备用模型 [{BACKUP_MODEL}]！")
-                        current_model = BACKUP_MODEL
-                        try:
-                            api_kwargs["model"] = BACKUP_MODEL
-                            response = client.chat.completions.create(**api_kwargs)
-                            chunk_result = response.choices[0].message.content
-                            all_summary_pieces.append(chunk_result)
-                            chunk_success = True
-                            print(f"   🎉 成功使用备用模型 [{BACKUP_MODEL}] 挽回本批次数据！")
-                            time.sleep(5)
-                        except Exception as backup_err:
-                            print(f"   ❌ 严重警告：备用模型失败，原因为: {backup_err}")
-                    else:
-                        # 别的顽固错误（非1305），直接报错结束
-                        print(f"   ❌ 第 {i+1} 批数据在重试 {MAX_RETRIES} 次后因非拥堵原因彻底失败。")
+                    current_model = BACKUP_MODEL
+                    try:
+                        api_kwargs["model"] = BACKUP_MODEL
+                        response = client.chat.completions.create(**api_kwargs)
+                        chunk_result = response.choices[0].message.content
+                        all_summary_pieces.append(chunk_result)
+                        chunk_success = True
+                        print(f"   🎉 成功使用备用模型 [{BACKUP_MODEL}] 挽回本批次数据！")
+                        time.sleep(5)
+                    except Exception as backup_err:
+                        print(f"   ❌ 严重警告：备用模型失败，原因为: {backup_err}")
         if not chunk_success:
             print(f"🚨 警告：第 {i+1} 批数据已彻底丢失，跳过此批。")
 
