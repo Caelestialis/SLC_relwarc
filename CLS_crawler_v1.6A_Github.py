@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 """
 Created on Sun Jun 28 00:30:34 2026
-
+重要教训：统一时间。
+云端(GitHub Actions使用UTC+0标准时间)、本地编写(Python编译环境，即我的电脑，使用UTC+8北京时间)、爬虫网页(财联社根据访问者的系统时间决定)
 @author: Fang Yizhou
 """
 
