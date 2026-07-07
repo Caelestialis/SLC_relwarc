@@ -49,6 +49,10 @@ options.add_argument('--headless=new')  # 云端 Actions 必须开启无头模�
 options.add_argument('--no-sandbox')
 options.add_argument('--disable-dev-shm-usage')
 driver = webdriver.Chrome(options=options)
+driver.execute_cdp_cmd(
+    "Emulation.setTimezoneOverride",
+    {"timezoneId": "Asia/Shanghai"}
+)
 driver.maximize_window()
 
 all_data = []
