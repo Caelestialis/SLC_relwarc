@@ -286,6 +286,9 @@ if all_data:
     # ---- 3. 自动化推送 ----
     print("\n开始通过邮件向主人推送日报...")
     try:
+        # 极简翻译：把 **加粗** 替换为 <b>加粗</b>，并把换行变成 <br>
+        html_ready_summary = ai_summary.replace("\n", "<br>")
+        html_ready_summary = re.sub(r'\*\*(.*?)\*\*', r'<b>\1</b>', html_ready_summary)
         # 构建复杂的邮件结构（支持正文+附件）
         # 核心步骤 1：把两个收件人地址打包成一个 Python 列表（List）
         to_addrs = [RECEIVER_EMAIL, RECEIVER_EMAIL_2]
@@ -296,7 +299,7 @@ if all_data:
         # msg['To'] = RECEIVER_EMAIL
         msg['Subject'] = f"🤖 AI 财经简报 - {now.strftime('%Y-%m-%d %H:%M')}"
         # 将 AI 总结放入邮件正文（支持 Markdown 或纯文本）
-        msg.attach(MIMEText(ai_summary, 'plain', 'utf-8'))
+        msg.attach(MIMEText(html_ready_summary, 'plain', 'utf-8'))
         
         # 挂载原始的 Excel 附件
         with open(filename, "rb") as attachment:
