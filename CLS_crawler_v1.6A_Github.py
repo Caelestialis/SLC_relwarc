@@ -232,7 +232,7 @@ if all_data:
                         {"role": "user", "content": raw_news_text}
                         ],
                         "thinking": {"type": "disabled"},
-                        "max_tokens": 10000,
+                        "max_tokens": 9500,
                         "temperature": 0.3
                     }
                 
