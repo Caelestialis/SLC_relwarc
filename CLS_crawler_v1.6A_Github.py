@@ -231,8 +231,8 @@ if all_data:
                         {"role": "user", "content": raw_news_text}
                         ],
                         "thinking": {"type": "disabled"},
-                        "max_tokens": 3200,
-                        "temperature": 0.5
+                        "max_tokens": 3000,
+                        "temperature": 0.6
                     }
                 
                 response = client.chat.completions.create(**api_kwargs)
