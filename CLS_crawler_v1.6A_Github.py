@@ -234,7 +234,8 @@ if all_data:
                         ],
                         "thinking": {"type": "disabled"},
                         "max_tokens": 9500,
-                        "temperature": 0.3
+                        "temperature": 0.3,
+                        "frequency_penalty": 0.8  # 💡 核心武器：加入词频惩罚 (0.0~2.0)，值越大越能从底层算法上彻底消灭重复复读！
                     }
                 
                 response = client.chat.completions.create(**api_kwargs)
