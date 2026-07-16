@@ -65,7 +65,8 @@ try:
 
     # 1. 点击打开日历
     calendar_btn = wait.until(EC.element_to_be_clickable((By.XPATH, CALENDAR_BTN_XPATH)))
-    calendar_btn.click()
+    # calendar_btn.click()
+    driver.execute_script("arguments[0].click();", calendar_btn)
     time.sleep(1)
 
     # 2. 点击“今天”
