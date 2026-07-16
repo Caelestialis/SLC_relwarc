@@ -264,6 +264,8 @@ if all_data:
                 else:
                     if is_congestion:
                         print(f"   🚨 连续 {MAX_RETRIES} 次触发 1305 拥堵。降级为备用模型 [{BACKUP_MODEL}]！")
+                    else:
+                        print(f"   🚨 连续 {MAX_RETRIES} 次触发错误。降级为备用模型 [{BACKUP_MODEL}]！")
                     current_model = BACKUP_MODEL
                     try:
                         api_kwargs["model"] = BACKUP_MODEL
