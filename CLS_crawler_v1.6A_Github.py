@@ -182,7 +182,7 @@ if all_data:
     print("\n正在调用 GLM-4.7 Flash 提炼财经日报...")
     
     # 设定每批处理的新闻条数（输入token长度限制200k，每次最大处理量约600条，按每条新闻300token计）
-    CHUNK_SIZE = 270
+    CHUNK_SIZE = 150
     all_summary_pieces = [] # 存放每一批 AI 总结出来的结果
     # 定义首选模型和备用模型
     PRIMARY_MODEL = "glm-4.7-flash"
@@ -224,15 +224,15 @@ if all_data:
                                 "- 【重要上市公司动向】：业绩预增/暴跌、股东巨额减持、新增订单/业务... \n\n"
                                 "C) 输出样式：\n"
                                 "1. 请按上述三大保留板块作为标题输出。\n"
-                                "2. 采用 Bullet Point（列表要点）的形式总结新闻，每条 Bullet point 的字数不超过 150 字。\n"
-                                "3. 三大保留板块中，每个板块的总输出条数不超过 20 条。若原始数据过多，请严格秉承‘择优录取’原则，仅保留最重磅、对市场影响最大的前 20 条，舍弃其余次要资讯。\n"
+                                "2. 采用 Bullet Point（列表要点）的形式总结新闻。如果不同新闻属于同一事件，请合并为一条。每条 Bullet point 的字数不超过 150 字。\n"
+                                "3. 三大保留板块中，每个板块的总输出条数不超过 12 条。若原始数据过多，优先选择市场影响最大的；如果所有重要新闻已经总结完成，请立即结束输出。\n"
                             )
                         },
                         {"role": "user", "content": raw_news_text}
                         ],
                         "thinking": {"type": "disabled"},
-                        "max_tokens": 9300,
-                        "temperature": 0.3
+                        "max_tokens": 3200,
+                        "temperature": 0.5
                     }
                 
                 response = client.chat.completions.create(**api_kwargs)
