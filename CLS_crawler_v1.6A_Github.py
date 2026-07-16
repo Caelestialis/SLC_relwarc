@@ -182,7 +182,7 @@ if all_data:
     print("\n正在调用 GLM-4.7 Flash 提炼财经日报...")
     
     # 设定每批处理的新闻条数（输入token长度限制200k，每次最大处理量约600条，按每条新闻300token计）
-    CHUNK_SIZE = 150
+    CHUNK_SIZE = 155
     all_summary_pieces = [] # 存放每一批 AI 总结出来的结果
     # 定义首选模型和备用模型
     PRIMARY_MODEL = "glm-4.7-flash"
