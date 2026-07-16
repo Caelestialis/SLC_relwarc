@@ -232,10 +232,9 @@ if all_data:
                         },
                         {"role": "user", "content": raw_news_text}
                         ],
-                        "thinking": {"type": "disabled"},
+                        "thinking": {"type": "enabled"},
                         "max_tokens": 9500,
-                        "temperature": 0.3,
-                        "frequency_penalty": 0.8  # 💡 核心武器：加入词频惩罚 (0.0~2.0)，值越大越能从底层算法上彻底消灭重复复读！
+                        "temperature": 0.3
                     }
                 
                 response = client.chat.completions.create(**api_kwargs)
