@@ -166,6 +166,7 @@ SENDER_EMAIL = os.getenv("SENDER_EMAIL")
 SENDER_PASSWORD = os.getenv("SENDER_PASSWORD") # 邮箱的授权码/客户端密码，不是登录密码
 RECEIVER_EMAIL = os.getenv("RECEIVER_EMAIL")
 RECEIVER_EMAIL_2 = os.getenv("RECEIVER_EMAIL_2")
+RECEIVER_EMAIL_3 = os.getenv("RECEIVER_EMAIL_3")
 FEISHU_WEBHOOK_URL = os.getenv("FEISHU_WEBHOOK_URL")    # 飞书 Webhook 链接
 
 # ==============================================================================
@@ -292,7 +293,7 @@ if all_data:
         # html_ready_summary = re.sub(r'\*\*(.*?)\*\*', r'<b>\1</b>', html_ready_summary)
         # 构建复杂的邮件结构（支持正文+附件）
         # 核心步骤 1：把两个收件人地址打包成一个 Python 列表（List）
-        to_addrs = [RECEIVER_EMAIL, RECEIVER_EMAIL_2]
+        to_addrs = [RECEIVER_EMAIL, RECEIVER_EMAIL_2, RECEIVER_EMAIL_3]
         msg = MIMEMultipart()
         msg['From'] = SENDER_EMAIL
         # 核心步骤 2：msg['To'] 接收的是一个“用英文逗号分隔的字符串”，而不是列表！
