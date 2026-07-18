@@ -298,11 +298,12 @@ if all_data:
         # html_ready_summary = re.sub(r'\*\*(.*?)\*\*', r'<b>\1</b>', html_ready_summary)
         # 构建复杂的邮件结构（支持正文+附件）
         # 核心步骤 1：把两个收件人地址打包成一个 Python 列表（List）
-        to_addrs = [RECEIVER_EMAIL, RECEIVER_EMAIL_2, RECEIVER_EMAIL_3]
+        raw_addrs = [RECEIVER_EMAIL, RECEIVER_EMAIL_2, RECEIVER_EMAIL_3]
+        to_addrs = [addr for addr in raw_addrs if addr and isinstance(addr, str)]
         msg = MIMEMultipart()
         msg['From'] = SENDER_EMAIL
         # 核心步骤 2：msg['To'] 接收的是一个“用英文逗号分隔的字符串”，而不是列表！
-        msg['To'] = ", ".join(to_addrs)
+        msg['To'] = ",".join(to_addrs)
         # msg['To'] = RECEIVER_EMAIL
         msg['Subject'] = f"🤖 AI 财经简报 - {now.strftime('%Y-%m-%d %H:%M')}"
         # 将 AI 总结放入邮件正文（支持 Markdown 或纯文本）
