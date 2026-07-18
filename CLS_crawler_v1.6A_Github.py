@@ -14,6 +14,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.service import Service
 
 import os
 import smtplib
@@ -49,7 +50,11 @@ options = webdriver.ChromeOptions()
 options.add_argument('--headless=new')  # 云端 Actions 必须开启无头模式
 options.add_argument('--no-sandbox')
 options.add_argument('--disable-dev-shm-usage')
-driver = webdriver.Chrome(options=options)
+# 🛠️ 定义本地驱动服务。在配置了 browser-actions 的环境下，它会自动嗅探并绑定本地驱动
+service = Service()
+# 💡 将 service 传入，让 Selenium Manager 彻底闭嘴，直接离线启动
+driver = webdriver.Chrome(service=service, options=options)
+# driver = webdriver.Chrome(options=options)
 driver.execute_cdp_cmd(
     "Emulation.setTimezoneOverride",
     {"timezoneId": "Asia/Shanghai"}
