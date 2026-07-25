@@ -15,6 +15,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.service import Service
+from selenium.common.exceptions import TimeoutException
 
 import os
 import smtplib
@@ -50,11 +51,15 @@ options = webdriver.ChromeOptions()
 options.add_argument('--headless=new')  # 云端 Actions 必须开启无头模式
 options.add_argument('--no-sandbox')
 options.add_argument('--disable-dev-shm-usage')
+
 # 🛠️ 定义本地驱动服务。在配置了 browser-actions 的环境下，它会自动嗅探并绑定本地驱动
 service = Service()
 # 💡 将 service 传入，让 Selenium Manager 彻底闭嘴，直接离线启动
 driver = webdriver.Chrome(service=service, options=options)
-# driver = webdriver.Chrome(options=options)
+
+# 强行设置单次页面加载超时上限为 35 秒（避免默认 120 秒的大卡死）
+driver.set_page_load_timeout(35)
+
 driver.execute_cdp_cmd(
     "Emulation.setTimezoneOverride",
     {"timezoneId": "Asia/Shanghai"}
@@ -64,8 +69,32 @@ driver.maximize_window()
 all_data = []
 stop_crawling = False
 
+# 💡 核心：带 Retry 机制的网页加载循环
+MAX_RETRIES = 3  # 最大尝试次数
+load_success = False
+
+for attempt in range(1, MAX_RETRIES + 1):
+    try:
+        print(f"🌐 正在尝试打开目标网页 (第 {attempt}/{MAX_RETRIES} 次尝试)...")
+        driver.get(URL)
+        load_success = True
+        print("✅ 网页 100% 完整加载成功！")
+        break  # 如果完美加载完成，直接跳出重试循环
+    except TimeoutException:
+        print(f"⚠️ 第 {attempt} 次加载超时（超过 35 秒未完全响应）。")
+        if attempt < MAX_RETRIES:
+            print("🔄 正在等待 25 秒后自动重试...")
+            time.sleep(25)
+        else:
+            print("🚨 已达到最大重试次数！网页主体 DOM 结构大概率已就绪。")
+            print("🛑 执行 window.stop() 强行叫停后台残余图片/广告请求，准备开始爬取...")
+            # 强制停止浏览器继续死等不重要的残余资源
+            driver.execute_script("window.stop();")
+            
+# 给页面异步渲染留出 2~3 秒的缓冲时间
+time.sleep(3)
+
 try:
-    driver.get(URL)
     wait = WebDriverWait(driver, 15)
 
     # 1. 点击打开日历
