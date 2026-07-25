@@ -42,7 +42,7 @@ utc_now = datetime.now(timezone.utc)
 # 2. 在绝对零时区的基础上，统一往后拨 8 个小时，即标准的北京时间
 now = utc_now.replace(tzinfo=None) + timedelta(hours=8)
 
-time_limit = now - timedelta(hours=12.5)
+time_limit = now - timedelta(hours=12.1)
 print(f"当前时间: {now.strftime('%Y-%m-%d %H:%M:%S')}")
 print(f"截止时间（12小时前）: {time_limit.strftime('%Y-%m-%d %H:%M:%S')}\n")
 
