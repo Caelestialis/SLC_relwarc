@@ -53,15 +53,15 @@ options.add_argument('--no-sandbox')
 options.add_argument('--disable-dev-shm-usage')
 
 # 💡 核心点：改用 eager 策略，只等 DOM 结构，不等图片/媒体资源！
-options.page_load_strategy = 'eager'
+# options.page_load_strategy = 'eager'
 
 # 🛠️ 定义本地驱动服务。在配置了 browser-actions 的环境下，它会自动嗅探并绑定本地驱动
 service = Service()
 # 💡 将 service 传入，让 Selenium Manager 彻底闭嘴，直接离线启动
 driver = webdriver.Chrome(service=service, options=options)
 
-# 强行设置单次页面加载超时上限为 35 秒（避免默认 120 秒的大卡死）
-driver.set_page_load_timeout(25)
+# 强行设置单次页面加载超时上限为 45 秒（避免默认 120 秒的大卡死）
+driver.set_page_load_timeout(45)
 
 driver.execute_cdp_cmd(
     "Emulation.setTimezoneOverride",
@@ -84,9 +84,9 @@ for attempt in range(1, MAX_RETRIES + 1):
         print("✅ 网页 100% 完整加载成功！")
         break  # 如果完美加载完成，直接跳出重试循环
     except TimeoutException:
-        print(f"⚠️ 第 {attempt} 次加载超时（超过 25 秒未完全响应）。")
+        print(f"⚠️ 第 {attempt} 次加载超时（超过 45 秒未完全响应）。")
         if attempt < MAX_RETRIES:
-            print("🔄 正在等待 25 秒后自动重试...")
+            print("🔄 正在等待 60 秒后自动重试...")
             time.sleep(25)
         else:
             print("🚨 已达到最大重试次数！网页主体 DOM 结构大概率已就绪。")
