@@ -35,7 +35,7 @@ jobs:
     - name: 执行爬虫脚本并发送报告(失败自动重试)
       uses: nick-fields/retry@v3
       with:
-        timeout_minutes: 15      # 单次运行的最长超时时间（10分钟足够爬虫运行）
+        timeout_minutes: 15      # 单次运行的最长超时时间（15分钟足够爬虫运行）
         max_attempts: 4          # 最多重试 3 次
         retry_wait_seconds: 900  # 💡 关键修改：每次失败后等待 15 分钟 (15 * 60 = 900秒)
         command: python CLS_crawler_v1.6A_Github.py
