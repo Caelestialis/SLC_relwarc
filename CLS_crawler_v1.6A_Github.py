@@ -84,15 +84,21 @@ for attempt in range(1, MAX_RETRIES + 1):
         load_success = True
         print("✅ 网页 100% 完整加载成功！")
         break  # 如果完美加载完成，直接跳出重试循环
+        
     except TimeoutException:
         print(f"⚠️ 第 {attempt} 次加载超时（超过 45 秒未完全响应）。")
+        # 💡 清理挂起的残留请求与缓存
+        driver.execute_script("window.stop();") # 1. 瞬间斩断所有后台在排队/挂起的网络 Socket
+        try:
+            driver.delete_all_cookies()         # 2. 清理 Session/Cookie，防止状态污染
+        except Exception:
+            pass
         if attempt < MAX_RETRIES:
             print("🔄 正在等待 90 秒后自动重试...")
             time.sleep(90)
         else:
             print("🚨 已达到最大重试次数！网页仍未加载完成。")
             print("🛑 执行 window.stop() 强行叫停加载请求，准备开始爬取...")
-            # 强制停止浏览器继续死等不重要的残余资源
             driver.execute_script("window.stop();")
             
 # 给页面异步渲染留出 2~3 秒的缓冲时间
